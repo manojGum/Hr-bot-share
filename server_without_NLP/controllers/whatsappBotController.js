@@ -107,6 +107,7 @@ const whatsappBotController = async (req, res) => {
           // maxSimilarity = similarity;
           if (isMatch(faq.question.toLocaleLowerCase(), "i need my details", similarityThreshold)) {
             let botR = await axios.get(`${faq.response}${userPhoneNumber}`);
+            console.log(botR)
             if (botR) {
               botResponse = await JSON.stringify(botR.data);
               console.log(`Bot message from ${message.to}:  ${botResponse}`);
@@ -212,6 +213,28 @@ const whatsappBotController = async (req, res) => {
             console.log(button)
             client.sendMessage(message.from, button);
 
+          }else if(isMatch(faq.question.toLocaleLowerCase(), 'list', similarityThreshold)){
+            const productsList = new List(
+              "Here's our list of products at 50% off",
+              "View all products",
+              [
+                {
+                  title: "Products list",
+                  rows: [
+                    { id: "!buttons", title:"!buttons" },
+                    { id: "button", title: "button" },
+                    { id: "!list", title: "list" },
+                    { id: "mango", title: "manog" },
+                    { id: "apple", title: "apple" },
+                    { id: "banana", title: "banana" },
+                    { id: "gra", title: "list" },
+                  ],
+                },
+              ],
+              "Please select a product"
+            );
+            console.log(message.from,productsList)
+            await client.sendMessage(message.from, productsList);
           } else {
             botResponse = faq.response;
             console.log(`Bot message from else per ${message.to}: ${botResponse}`);
